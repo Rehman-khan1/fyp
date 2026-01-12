@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../utils/backend_config.dart';
 
 class AuthService {
-  static const String baseUrl = "http://10.0.2.2:8000";
+  static final String baseUrl = BackendConfig.baseUrl;
 
   static Future<bool> login(String email, String password) async {
     try {
+      final uri = Uri.parse('$baseUrl/auth/login');
       final response = await http
           .post(
-            Uri.parse('$baseUrl/login'),
+            uri,
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'email': email,
-              'password': password,
-            }),
+            body: jsonEncode({'email': email, 'password': password}),
           )
           .timeout(const Duration(seconds: 5));
 

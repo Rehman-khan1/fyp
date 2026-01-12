@@ -1,8 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -15,25 +16,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> loginUser() async {
     setState(() => isLoading = true);
-
-    final url = Uri.parse("http://10.0.2.2:8000/login"); // Android emulator
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "email": emailController.text,
-        "password": passwordController.text,
-      }),
+    final success = await AuthService.login(
+      emailController.text.trim(),
+      passwordController.text,
     );
 
     setState(() => isLoading = false);
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Login Successful")));
+    if (success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login Successful")));
+      await Future.delayed(Duration(milliseconds: 700));
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Invalid credentials")));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Invalid credentials")));
     }
   }
 
@@ -47,17 +46,23 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               SizedBox(height: 60),
               Center(
                 child: Text(
                   "Log In",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.teal),
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                  ),
                 ),
               ),
 
               SizedBox(height: 40),
-              Text("Welcome", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+              Text(
+                "Welcome",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 8),
               Text(
                 "Log in to access personalized nutritional insights, allergen alerts, and smart product comparisons.",
@@ -72,7 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFFFF0C2),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
 
@@ -86,10 +93,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   filled: true,
                   fillColor: Color(0xFFFFF0C2),
                   suffixIcon: IconButton(
-                    icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                    icon: Icon(
+                      obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
                     onPressed: () => setState(() => obscureText = !obscureText),
                   ),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
 
@@ -97,7 +108,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
-                  child: Text("Forgot Password", style: TextStyle(color: Colors.teal)),
+                  child: Text(
+                    "Forgot Password",
+                    style: TextStyle(color: Colors.teal),
+                  ),
                 ),
               ),
 
@@ -109,7 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: isLoading ? null : loginUser,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
                   ),
                   child: isLoading
                       ? CircularProgressIndicator(color: Colors.white)
