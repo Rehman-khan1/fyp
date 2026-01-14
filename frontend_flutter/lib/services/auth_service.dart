@@ -25,4 +25,29 @@ class AuthService {
       return false;
     }
   }
+
+  static Future<bool> signup(String name, String email, String password) async {
+    try {
+      final uri = Uri.parse('$baseUrl/auth/signup');
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'name': name,
+              'email': email,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 5));
+
+      print("SIGNUP STATUS: ${response.statusCode}");
+      print("SIGNUP BODY: ${response.body}");
+
+      return response.statusCode == 201;
+    } catch (e) {
+      print("Signup error: $e");
+      return false;
+    }
+  }
 }

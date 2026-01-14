@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
+import 'screens/signup_screen.dart';
 import 'screens/main_screen.dart';
 
 void main() {
@@ -14,7 +15,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
-      routes: {'/': (_) => LoginScreen(), '/home': (_) => MainScreen()},
+      routes: {
+        '/': (_) => LoginScreen(),
+        '/login': (_) => LoginScreen(),
+        '/signup': (_) => SignupScreen(),
+        '/home': (_) => MainScreen(),
+      },
     );
   }
 }

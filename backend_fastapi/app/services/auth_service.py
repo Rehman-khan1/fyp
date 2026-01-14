@@ -1,10 +1,19 @@
 # TEMPORARY AUTH SERVICE (NO BCRYPT)
 
+# Store users as email -> {"password": str, "name": str}
 fake_users = {
-    "zeeshan@gmail.com": "12345678"
+    "zeeshan@gmail.com": {"password": "12345678", "name": "Zeeshan"}
 }
 
 def verify_user(email: str, password: str) -> bool:
-    if email not in fake_users:
+    user = fake_users.get(email)
+    if not user:
         return False
-    return fake_users[email] == password
+    return user.get("password") == password
+
+def add_user(name: str, email: str, password: str) -> bool:
+    """Add a new user. Returns False if user already exists, True if added."""
+    if email in fake_users:
+        return False
+    fake_users[email] = {"password": password, "name": name}
+    return True
